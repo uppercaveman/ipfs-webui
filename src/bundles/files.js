@@ -1,6 +1,8 @@
 import { createAsyncResourceBundle, createSelector } from 'redux-bundler'
 import { join, dirname } from 'path'
 
+const provs = {}
+
 const bundle = createAsyncResourceBundle({
   name: 'files',
   actionBaseType: 'FILES',
@@ -20,12 +22,21 @@ const bundle = createAsyncResourceBundle({
         if (stats.type === 'directory') {
           return getIpfs().files.ls(path, {l: true}).then((res) => {
             // FIX: open PR on js-ipfs-api
-            if (res) {
-              res = res.map(file => {
-                file.type = file.type === 0 ? 'file' : 'directory'
-                return file
-              })
-            }
+            res = res || []
+
+            res.forEach(file => {
+              file.type = file.type === 0 ? 'file' : 'directory'
+              file.peers = 0
+
+              if (provs[file.hash] >= 0) {
+                file.peers = provs[file.hash]
+              } else if (provs[file.hash] !== -1) {
+                provs[file.hash] = -1
+                getIpfs().dht.findprovs(file.hash, { timeout: '5s', 'num-providers': 5 })
+                  .then((peers) => { provs[file.hash] = peers.length })
+                  .catch(console.log)
+              }
+            })
 
             return {
               path: path,
@@ -45,7 +56,7 @@ const bundle = createAsyncResourceBundle({
         }
       })
   },
-  staleAfter: 100,
+  staleAfter: 60000,
   checkIfOnline: false
 })
 
@@ -55,8 +66,8 @@ bundle.reactFilesFetch = createSelector(
   'selectRouteInfo',
   'selectFiles',
   (shouldUpdate, ipfsReady, {url, params}, files) => {
-    if (shouldUpdate && ipfsReady && url.startsWith('/files')) {
-      if (!files || files.path !== params.path) {
+    if (ipfsReady && url.startsWith('/files')) {
+      if (shouldUpdate || !files || files.path !== params.path) {
         return { actionCreator: 'doFetchFiles' }
       }
     }
