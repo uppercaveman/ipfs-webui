@@ -16,7 +16,7 @@ The WebUI is a **work-in-progress**. Follow the [development](#development) proc
 
 ## Config your IPFS Daemon
 
-When developing the WebUI you will need an ipfs daemon running with API access on port `5001`, as well as the following configuration set, otherwise you will not be able to communicate with the ipfs node.
+When developing the WebUI you will need an ipfs daemon running with API access on port `10501`, as well as the following configuration set, otherwise you will not be able to communicate with the ipfs node.
 
 ```bash
 > ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["http://127.0.0.1:15888"]'
