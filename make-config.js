@@ -3,6 +3,9 @@ const createConfig = require('hjs-webpack')
 module.exports = (isDev) => {
   const config = createConfig({
     isDev: isDev,
+    https: false,
+    port: 15888,
+    hostname: '127.0.0.1',
     in: './src/js/index.js',
     out: './dist',
     output: {

@@ -19,7 +19,7 @@ The WebUI is a **work-in-progress**. Follow the [development](#development) proc
 When developing the WebUI you will need an ipfs daemon running with API access on port `5001`, as well as the following configuration set, otherwise you will not be able to communicate with the ipfs node.
 
 ```bash
-> ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["http://localhost:3000"]'
+> ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["http://127.0.0.1:15888"]'
 > ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
 > ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials '["true"]'
 ```
@@ -46,7 +46,7 @@ It might be a good idea to copy the `.ipfs/config` file somewhere with a useful 
 > git clone https://github.com/ipfs-shipyard/ipfs-webui
 > cd ipfs-webui
 > npm install
-# Runs server on port 3000.
+# Runs server on port 15888.
 > npm start
 ```
 
